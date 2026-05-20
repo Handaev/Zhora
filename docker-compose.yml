@@ -15,13 +15,15 @@ services:
     container_name: 'minio'
     ports:
         - 9000:9000
+        - 9001:9001
     environment:
       MINIO_ROOT_USER: jora
-      MINIO_ROOT_PASSWORD: jora
+      MINIO_ROOT_PASSWORD: jora1234
     networks:
-      app-zhora:
+      - app-zhora
     volumes:
       - minio_data
+    command: server /data --console-address ":9001"
 
 volumes:
   minio_data:

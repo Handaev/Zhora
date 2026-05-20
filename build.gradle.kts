@@ -24,6 +24,8 @@ dependencies {
 
 	implementation("io.minio:minio:9.0.0")
 
+	implementation("org.apache.pdfbox:pdfbox:3.0.7")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testCompileOnly("org.projectlombok:lombok")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")

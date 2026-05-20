@@ -3,3 +3,8 @@ spring:
     name: Zhora
 
 minio:
+  url: ${URL:http://localhost:9000}
+  access-key: ${ACCESS_KEY:jora}
+  secret-key: ${SECRET_KEY:jora1234}
+  bucket:
+    name: ${BUCKET:mybucket}
