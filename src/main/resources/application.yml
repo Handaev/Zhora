@@ -1,10 +1,43 @@
+server:
+  port: ${PORT_APP:8081}
+  scheduler:
+    fixedRate: 300000
+  conversion:
+    limit: 20
+
 spring:
-  application:
-    name: Zhora
+  datasource:
+    url: ${URL_DB:jdbc:postgresql://postgres:5432/inbox}
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 minio:
   url: ${URL:http://localhost:9000}
   access-key: ${ACCESS_KEY:jora}
   secret-key: ${SECRET_KEY:jora1234}
-  bucket:
-    name: ${BUCKET:mybucket}
+
+kafka:
+  bootstrap-servers: ${URL_KAFKA:kafka:9092}
+  producer:
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.apache.kafka.common.serialization.JsonSerializer
+  consumer:
+    group-id: conversion
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+logging:
+  level:
+    com.example.Zhora: DEBUG
+    org:
+      apache:
+        kafka:
+          clients:
+            NetworkClient=DEBUG:

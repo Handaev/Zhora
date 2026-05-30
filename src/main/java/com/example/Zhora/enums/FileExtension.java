@@ -1,29 +1,26 @@
 package com.example.Zhora.enums;
 
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.Set;
 
 @Getter
+@ToString
 public enum FileExtension {
-    NON(null, Set.of()),
-    TXT("txt", Set.of()),
-    PNG("png", Set.of()),
-    JPG("jpg", Set.of()),
-    ZIP("zip", Set.of()),
-    PDF("pdf", Set.of(TXT, PNG, JPG, ZIP));
+    NON("", Set.of()),
+    PDF("pdf", Set.of()),
+    TXT("txt", Set.of("pdf")),
+    PNG("png", Set.of("pdf")),
+    JPG("jpg", Set.of("pdf")),
+    ZIP("zip", Set.of("pdf"));
 
     private final String extension;
-    private Set<FileExtension> allowedTypes;
+    private Set<String> allowedTypes;
 
     FileExtension(String extension,
                   Set<Object> allowedTypes) {
         this.extension = extension;
-    }
-
-    @Override
-    public String toString() {
-        return extension;
     }
 
     public static FileExtension getFileExtension(String extension) {
