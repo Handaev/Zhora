@@ -27,7 +27,7 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_DB: inbox
+      POSTGRES_DB: conversion
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
@@ -35,7 +35,7 @@ services:
     networks:
       - app-zhora
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d inbox"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d conversion"]
       interval: 10s
       timeout: 5s
       retries: 5

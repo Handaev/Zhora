@@ -4,10 +4,11 @@ server:
     fixedRate: 300000
   conversion:
     limit: 20
+    bucketForPdf: ${TO_BUCKET_PDF:bucketForPdf}
 
 spring:
   datasource:
-    url: ${URL_DB:jdbc:postgresql://postgres:5432/inbox}
+    url: ${URL_DB:jdbc:postgresql://postgres:5432/conversion}
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver

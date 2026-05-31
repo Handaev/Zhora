@@ -4,7 +4,6 @@ import com.example.Zhora.entity.FileConversion;
 import com.example.Zhora.exception.ConversionException;
 import com.example.Zhora.service.ChangeConversionService;
 import com.example.Zhora.service.ConversionService;
-import io.minio.errors.MinioException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +17,17 @@ public class ChangeConversionServiceImpl implements ChangeConversionService{
     private final List<ConversionService> conversionService;
 
     @Override
-    public ConversionService changeConversion(FileConversion fileConversion) throws NoSuchFileException, ConversionException {
+    public ConversionService changeConversion(FileConversion fileConversion) throws ConversionException {
         String fromExtension = fileConversion.getName().split("\\.")[1];
         String toExtension = fileConversion.getToExtension();
-
-        for(ConversionService conversionService : conversionService){
-            if(conversionService.checkConversionFile(fileConversion)) {
-                return conversionService;
+        try {
+            for (ConversionService conversionService : conversionService) {
+                if (conversionService.checkConversionFile(fileConversion)) {
+                    return conversionService;
+                }
             }
+        } catch (NoSuchFileException e){
+            throw new ConversionException(String.format("No found file: %s", fileConversion.getName()));
         }
 
         throw new ConversionException(String.format("No support conversion from %s to %s", fromExtension, toExtension));

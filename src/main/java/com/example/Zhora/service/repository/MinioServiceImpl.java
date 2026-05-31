@@ -1,4 +1,4 @@
-package com.example.Zhora.service.impl;
+package com.example.Zhora.service.repository;
 
 import com.example.Zhora.entity.FileConversion;
 import com.example.Zhora.exception.ConversionException;
@@ -63,14 +63,22 @@ public class MinioServiceImpl implements MinioService {
     }
 
     @Override
-    public ObjectWriteResponse putObject(MultipartFile file, String bucketName) throws MinioException, IOException {
-        return minioClient.putObject(
-                PutObjectArgs.builder()
-                        .bucket(bucketName)
-                        .object(file.getName())
-                        .stream(file.getInputStream(), file.getSize(), -1L)
-                        .contentType(file.getContentType())
-                        .build()
-        );
+    public ObjectWriteResponse putObject(MultipartFile file, String bucketName) {
+        String fileName = file.getOriginalFilename();
+
+        try {
+            return minioClient.putObject(
+                    PutObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(fileName)
+                            .stream(file.getInputStream(), file.getSize(), -1L)
+                            .contentType(file.getContentType())
+                            .build()
+            );
+        } catch (MinioException e) {
+            throw new ConversionException(String.format("Ошибка при обновлении файла %s", fileName), e);
+        } catch (IOException e) {
+            throw new ConversionException(String.format("Ошибка при создании потока %s", fileName), e);
+        }
     }
 }

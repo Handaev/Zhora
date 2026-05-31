@@ -5,7 +5,7 @@ import com.example.Zhora.entity.FileConversion;
 import com.example.Zhora.exception.ConversionException;
 import com.example.Zhora.service.WorkflowConversionService;
 import com.example.Zhora.service.impl.ChangeConversionServiceImpl;
-import com.example.Zhora.service.impl.MinioServiceImpl;
+import com.example.Zhora.service.repository.MinioServiceImpl;
 import com.example.Zhora.service.repository.FileConversionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,12 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +28,9 @@ public class WorkflowConversionServiceImpl implements WorkflowConversionService 
 
     @Value("${server.conversion.limit}")
     private int LIMIT;
+
+    @Value("${server.conversion.bucketForPdf}")
+    private String bucketForPdf;
 
     public List<Future<MultipartFile>> workflowConvert() {
         List<FileConversion> filesNeedConversion = fileConversionService.findFilesNoConversion(LIMIT);
@@ -70,7 +71,10 @@ public class WorkflowConversionServiceImpl implements WorkflowConversionService 
 
     @Override
     @Transactional
-    public void workflowSave(List<Future<MultipartFile>> files) {
-
+    public void workflowSave(List<Future<MultipartFile>> files) throws ExecutionException, InterruptedException, IOException {
+        for (Future<MultipartFile> future : files) {
+            MultipartFile file = future.get();
+            minioService.putObject(file, bucketForPdf);
+        }
     }
 }

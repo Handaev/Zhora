@@ -15,7 +15,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "file_conversion")
+@Table(name = "file_conversion_inbox")
 public class FileConversion {
 
     @Id
