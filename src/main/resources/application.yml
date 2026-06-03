@@ -1,10 +1,12 @@
 server:
   port: ${PORT_APP:8081}
   scheduler:
-    fixedRate: 300000
+    fixedRateRead: 15000
+    fixedRateWrite: 5000
   conversion:
     limit: 20
-    bucketForPdf: ${TO_BUCKET_PDF:bucketForPdf}
+    bucketForPdf: ${TO_BUCKET_PDF:pdf}
+    topicResponse: conversion-response
 
 spring:
   datasource:
@@ -17,8 +19,9 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
+#        format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
+#    show-sql: true
 minio:
   url: ${URL:http://localhost:9000}
   access-key: ${ACCESS_KEY:jora}
@@ -28,7 +31,7 @@ kafka:
   bootstrap-servers: ${URL_KAFKA:kafka:9092}
   producer:
     key-serializer: org.apache.kafka.common.serialization.StringSerializer
-    value-serializer: org.apache.kafka.common.serialization.JsonSerializer
+    value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
   consumer:
     group-id: conversion
     key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -38,6 +41,10 @@ logging:
   level:
     com.example.Zhora: DEBUG
     org:
+      hibernate:
+#        engine:
+#          transaction: DEBUG
+#        SQL: DEBUG
       apache:
         kafka:
           clients:

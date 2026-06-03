@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -16,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "file_conversion_inbox")
-public class FileConversion {
+public class FileConversionInbox {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -36,22 +35,21 @@ public class FileConversion {
     private boolean conversion;
 
     @Override
-    public boolean equals(Object object) {
-        if(this == object) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-
-        if(object == null || getClass() != object.getClass()) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        FileConversionOutbox fileConversionOutbox = (FileConversionOutbox) o;
 
-        FileConversion fileConversion = (FileConversion) object;
-
-        return this.name.equals(fileConversion.name) &&  this.bucketName.equals(fileConversion.bucketName);
+        return this.name.equals(fileConversionOutbox.getName())
+                && this.bucketName.equals(fileConversionOutbox.getBucketName());
     }
 
     @Override
-    public int hashCode(){
-        return Objects.hash(name, bucketName);
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

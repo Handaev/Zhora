@@ -1,6 +1,6 @@
 package com.example.Zhora.record;
 
-public record ConversionResponseRecord(String bucketName,
-                                       String fileName,
-                                       String toExtension) {
+public record ConversionResponseRecord(String id,
+                                       String bucketName,
+                                       String fileName) {
 }

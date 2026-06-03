@@ -1,6 +1,6 @@
 package com.example.Zhora.service.impl;
 
-import com.example.Zhora.entity.FileConversion;
+import com.example.Zhora.entity.FileConversionInbox;
 import com.example.Zhora.exception.ConversionException;
 import com.example.Zhora.service.ChangeConversionService;
 import com.example.Zhora.service.ConversionService;
@@ -17,12 +17,12 @@ public class ChangeConversionServiceImpl implements ChangeConversionService{
     private final List<ConversionService> conversionService;
 
     @Override
-    public ConversionService changeConversion(FileConversion fileConversion) throws ConversionException {
+    public ConversionService changeConversion(FileConversionInbox fileConversion) throws ConversionException {
         String fromExtension = fileConversion.getName().split("\\.")[1];
         String toExtension = fileConversion.getToExtension();
         try {
             for (ConversionService conversionService : conversionService) {
-                if (conversionService.checkConversionFile(fileConversion)) {
+                if (conversionService.checkConversion(fileConversion)) {
                     return conversionService;
                 }
             }

@@ -16,19 +16,11 @@ public enum FileExtension {
     ZIP("zip", Set.of("pdf"));
 
     private final String extension;
-    private Set<String> allowedTypes;
+    private final Set<String> allowedTypes;
 
     FileExtension(String extension,
-                  Set<Object> allowedTypes) {
+                  Set<String> allowedTypes) {
         this.extension = extension;
-    }
-
-    public static FileExtension getFileExtension(String extension) {
-        for (FileExtension fileExtension : FileExtension.values()) {
-            if (fileExtension.extension.equals(extension)) {
-                return fileExtension;
-            }
-        }
-        return FileExtension.NON;
+        this.allowedTypes = allowedTypes;
     }
 }

@@ -1,0 +1,173 @@
+package com.example.Zhora.service.impl;
+
+import com.example.Zhora.enums.FileExtension;
+import com.example.Zhora.service.repository.MinioServiceImpl;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.*;
+import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.springframework.stereotype.Service;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import static com.example.Zhora.service.constant.ConstantConversion.*;
+
+@Slf4j
+@Service
+public class ConversionZipServiceImpl extends AbstractConversionServiceImpl{
+
+    public ConversionZipServiceImpl(MinioServiceImpl minioService) {
+        super(minioService);
+    }
+
+    @Override
+    public byte[] parsing(InputStream inputStream) throws IOException {
+        try (PDDocument finalPdf = new PDDocument();
+             ByteArrayOutputStream out = new ByteArrayOutputStream();
+             ZipInputStream zipStream = new ZipInputStream(inputStream)) {
+
+            PDFont customFont = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+
+            ZipEntry entry;
+            while ((entry = zipStream.getNextEntry()) != null) {
+                String name = entry.getName();
+
+                if (entry.isDirectory()) {
+                    processDirectoryPage(finalPdf, name, customFont);
+                    zipStream.closeEntry();
+                    continue;
+                }
+
+                ByteArrayOutputStream entryBytes = new ByteArrayOutputStream();
+                byte[] buffer = new byte[SIZE_BUFFER];
+                int bytesRead;
+                while ((bytesRead = zipStream.read(buffer)) != -1) {
+                    entryBytes.write(buffer, 0, bytesRead);
+                }
+                byte[] fileData = entryBytes.toByteArray();
+
+                String lowerName = name.toLowerCase();
+                try {
+                    if (lowerName.endsWith(FileExtension.JPG.getExtension()) || lowerName.endsWith(FileExtension.PNG.getExtension())) {
+                        processImagePage(finalPdf, fileData);
+                    } else if (lowerName.endsWith(FileExtension.TXT.getExtension())) {
+                        processTextPage(finalPdf, fileData, name, customFont);
+                    } else if (lowerName.endsWith(FileExtension.PDF.getExtension())) {
+                        processPdfPages(finalPdf, fileData);
+                    } else {
+                        processUnknownPage(finalPdf, name, fileData.length, customFont);
+                    }
+                } catch (Exception e) {
+                    processUnknownPage(finalPdf, ERROR_PROCESSING, fileData.length, customFont);
+                }
+
+                zipStream.closeEntry();
+            }
+
+            finalPdf.save(out);
+            return out.toByteArray();
+        }
+    }
+
+
+    private void processDirectoryPage(PDDocument doc, String dirName, PDFont fontBold) throws IOException {
+        PDPage page = new PDPage(PDRectangle.A4);
+        doc.addPage(page);
+        try (PDPageContentStream stream = new PDPageContentStream(doc, page)) {
+            stream.beginText();
+            stream.setFont(fontBold, DIRECTORY_FONT_SIZE);
+            stream.newLineAtOffset(DIRECTORY_X_START, DIRECTORY_Y_START);
+            stream.showText(PRE_DIRECTORY + dirName);
+            stream.endText();
+        }
+    }
+
+    private void processImagePage(PDDocument doc, byte[] bytes) throws IOException {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
+            BufferedImage bimage = ImageIO.read(bais);
+            if (bimage != null) {
+                PDRectangle pageSize = new PDRectangle(bimage.getWidth(), bimage.getHeight());
+                PDPage page = new PDPage(pageSize);
+                doc.addPage(page);
+
+                PDImageXObject img = LosslessFactory.createFromImage(doc, bimage);
+                try (PDPageContentStream stream = new PDPageContentStream(doc, page)) {
+                    stream.drawImage(img, IMAGE_X_START, IMAGE_Y_START);
+                }
+            }
+        }
+    }
+
+    private void processTextPage(PDDocument doc, byte[] bytes, String fileName, PDFont font) throws IOException {
+        PDPage page = new PDPage(PDRectangle.A4);
+        doc.addPage(page);
+        try (PDPageContentStream stream = new PDPageContentStream(doc, page)) {
+            stream.beginText();
+            stream.setFont(font, TEXT_FONT_SIZE);
+            stream.setLeading(TEXT_LEADING);
+            stream.newLineAtOffset(TEXT_X_START, TEXT_Y_START);
+
+            stream.showText(PRE_FILE + fileName);
+            stream.newLine();
+            stream.newLine();
+
+            String text = new String(bytes, StandardCharsets.UTF_8);
+            BufferedReader reader = new BufferedReader(new StringReader(text));
+            String line;
+            int lines = 0;
+
+            while ((line = reader.readLine()) != null && lines < 40) {
+                line = line.replace("\t", "    ").replaceAll("[\\p{Cntrl}&&[^\\r\\n\\t]]", "");
+                try {
+                    stream.showText(line);
+                } catch (IllegalArgumentException e) {
+                    stream.showText(LINE_UNSUPPORTED);
+                }
+                stream.newLine();
+                lines++;
+            }
+            stream.endText();
+        }
+    }
+
+    private void processPdfPages(PDDocument mainDoc, byte[] bytes) throws IOException {
+        try (PDDocument innerDoc = Loader.loadPDF(bytes)) {
+            for (PDPage page : innerDoc.getPages()) {
+                mainDoc.addPage(mainDoc.importPage(page));
+            }
+        }
+    }
+
+    private void processUnknownPage(PDDocument doc, String fileName, long size, PDFont font) throws IOException {
+        PDPage page = new PDPage(PDRectangle.A4);
+        doc.addPage(page);
+        try (PDPageContentStream stream = new PDPageContentStream(doc, page)) {
+            stream.beginText();
+            stream.setFont(font, UNKNOWN_FONT_SIZE);
+            stream.newLineAtOffset(UNKNOWN_X_START, UNKNOWN_Y_START);
+            stream.showText(NON_CONVERTABLE);
+            stream.showText(PRE_NAME + fileName);
+            stream.newLine();
+            stream.showText(PRE_SIZE + size + POST_BYTES);
+            stream.endText();
+        }
+    }
+
+    @Override
+    public boolean checkAllowedTypes(String from, String to) {
+        if(FileExtension.ZIP.getExtension().equals(from)) {
+            return FileExtension.ZIP.getAllowedTypes().contains(to);
+        }
+        return false;
+    }
+}

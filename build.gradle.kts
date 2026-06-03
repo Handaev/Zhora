@@ -24,9 +24,8 @@ dependencies {
 
 	implementation("io.minio:minio:9.0.0")
 
-	implementation("com.itextpdf:itextpdf:5.5.13.5")
-
 	implementation("org.apache.pdfbox:pdfbox:3.0.2")
+	implementation("com.twelvemonkeys.imageio:imageio-webp:3.12.0")
 
 	implementation("org.springframework.kafka:spring-kafka:3.2.4")
 	implementation("org.apache.kafka:kafka-clients:3.7.0")

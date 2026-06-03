@@ -1,6 +1,6 @@
 package com.example.Zhora.service.repository;
 
-import com.example.Zhora.entity.FileConversion;
+import com.example.Zhora.entity.FileConversionInbox;
 import com.example.Zhora.exception.ConversionException;
 import com.example.Zhora.service.MinioService;
 import io.minio.*;
@@ -23,14 +23,15 @@ public class MinioServiceImpl implements MinioService {
     private final MinioClient minioClient;
 
     @Override
-    public InputStream downloadFile(FileConversion fileConversion) throws IOException {
+    public InputStream downloadObject(FileConversionInbox fileConversion) throws IOException {
         String fileName = fileConversion.getName();
 
-        try (InputStream inputStream = minioClient.getObject(
-                GetObjectArgs.builder()
-                        .bucket(fileConversion.getBucketName())
-                        .object(fileName)
-                        .build())) {
+        try {
+            InputStream inputStream = minioClient.getObject(
+                    GetObjectArgs.builder()
+                            .bucket(fileConversion.getBucketName())
+                            .object(fileName)
+                            .build());
             if (Objects.isNull(inputStream)) {
                 throw new NoSuchFileException(String.format("Отсутствует файл с названием: %s", fileName));
             }
@@ -41,7 +42,7 @@ public class MinioServiceImpl implements MinioService {
         }
     }
 
-    public StatObjectResponse statObject(FileConversion fileConversion) throws NoSuchFileException {
+    public StatObjectResponse statObject(FileConversionInbox fileConversion) throws NoSuchFileException {
         String fileName = fileConversion.getName();
 
         try {
@@ -64,7 +65,7 @@ public class MinioServiceImpl implements MinioService {
 
     @Override
     public ObjectWriteResponse putObject(MultipartFile file, String bucketName) {
-        String fileName = file.getOriginalFilename();
+        String fileName = file.getName();
 
         try {
             return minioClient.putObject(

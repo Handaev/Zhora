@@ -1,9 +1,9 @@
 package com.example.Zhora.kafka;
 
-import com.example.Zhora.entity.FileConversion;
-import com.example.Zhora.entity.mapper.FileConversionMapper;
+import com.example.Zhora.entity.FileConversionInbox;
+import com.example.Zhora.entity.mapper.FileConversionInboxMapper;
 import com.example.Zhora.record.ConversionRequestRecord;
-import com.example.Zhora.service.repository.FileConversionService;
+import com.example.Zhora.service.repository.FileConversionInboxService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -22,8 +21,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ConsumerKafka {
 
-    private final FileConversionService fileConversionService;
-    private final FileConversionMapper fileConversionMapper;
+    private final FileConversionInboxService fileConversionService;
+    private final FileConversionInboxMapper fileConversionMapper;
     private final ObjectMapper objectMapper;
 
     @KafkaListener(groupId = "conversion", topics = "conversion-request")
@@ -41,9 +40,9 @@ public class ConsumerKafka {
             );
 
             if (Objects.isNull(fileId)) {
-                FileConversion fileConversion = fileConversionMapper.toFileConversion(value);
+                FileConversionInbox fileConversion = fileConversionMapper.toFileConversion(value);
                 fileConversionService.save(fileConversion);
-                log.debug("Successfully saved file conversion with id: {}", fileId);
+                log.debug("Successfully saved file conversion with id: {}", fileConversion.getId());
             } else {
                 log.debug("File already exists with id: {}", fileId);
             }
