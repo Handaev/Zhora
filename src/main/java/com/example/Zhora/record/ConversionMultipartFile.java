@@ -1,5 +1,6 @@
 package com.example.Zhora.record;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,8 +36,8 @@ public class ConversionMultipartFile implements MultipartFile {
                                    String fromBucketName,
                                    byte[] content,
                                    String contentType,
-                                   String toExtension,
-                                   String fromExtension) {
+                                   String fromExtension,
+                                   String toExtension) {
         this.FileConversionInboxUuid = id;
         this.name = name;
         this.originalFileName = originalFileName;

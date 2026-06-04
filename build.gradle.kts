@@ -41,6 +41,17 @@ dependencies {
 	testCompileOnly("org.projectlombok:lombok")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testAnnotationProcessor("org.projectlombok:lombok")
+
+	testImplementation("org.testcontainers:testcontainers")
+	testImplementation("org.testcontainers:junit-jupiter")
+
+	testImplementation("org.testcontainers:postgresql")
+	testImplementation("org.testcontainers:kafka")
+	testImplementation("org.testcontainers:minio:1.19.7")
+
+	testImplementation("org.springframework.kafka:spring-kafka-test")
+
+	testImplementation("org.awaitility:awaitility")
 }
 
 tasks.withType<Test> {

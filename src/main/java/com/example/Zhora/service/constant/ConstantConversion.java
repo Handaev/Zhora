@@ -58,4 +58,7 @@ public class ConstantConversion {
     public static final float TXT_X_START = 50;
 
     public static final float TOP_MARGIN = 50;
+
+
+    public static final long AUTO_PART_SIZE = -1L;
 }

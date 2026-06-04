@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.NoSuchFileException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -47,7 +46,7 @@ public abstract class AbstractConversionServiceImpl implements ConversionService
         }
     }
 
-    public boolean checkConversion(FileConversionInbox file) throws ConversionException, NoSuchFileException {
+    public boolean checkConversion(FileConversionInbox file) throws ConversionException {
         StatObjectResponse statObjectResponse = minioServiceImpl.statObject(file);
         String fromExtension = statObjectResponse.object().split("\\.")[1];
         return checkAllowedTypes(fromExtension, file.getToExtension());

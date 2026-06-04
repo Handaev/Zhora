@@ -14,7 +14,7 @@ public interface ConversionService {
 
     byte[] parsing(InputStream inputStream) throws IOException;
 
-    boolean checkConversion(FileConversionInbox file) throws NoSuchFileException;
+    boolean checkConversion(FileConversionInbox file) ;
 
     boolean checkAllowedTypes(String from, String to);
 }

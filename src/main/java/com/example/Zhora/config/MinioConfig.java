@@ -1,28 +1,25 @@
 package com.example.Zhora.config;
 
-
 import io.minio.MinioClient;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@Data
 @Configuration
+@ConfigurationProperties(prefix = "minio")
 public class MinioConfig {
 
-    @Value("${minio.access-key}")
-    private String ACCESS_KEY;
-
-    @Value("${minio.secret-key}")
-    private String SECRET_KEY;
-
-    @Value("${minio.url}")
-    private String URL;
+    private String accessKey;
+    private String secretKey;
+    private String url;
 
     @Bean
     public MinioClient minioClient() {
         return MinioClient.builder()
-                .endpoint(URL)
-                .credentials(ACCESS_KEY, SECRET_KEY)
+                .endpoint(url)
+                .credentials(accessKey, secretKey)
                 .build();
     }
 }
