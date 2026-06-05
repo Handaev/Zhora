@@ -28,7 +28,27 @@ import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static com.example.Zhora.service.constant.ConstantConversion.*;
+import static com.example.Zhora.service.constant.ConstantConversion.DIRECTORY_FONT_SIZE;
+import static com.example.Zhora.service.constant.ConstantConversion.SIZE_BUFFER;
+import static com.example.Zhora.service.constant.ConstantConversion.ERROR_PROCESSING;
+import static com.example.Zhora.service.constant.ConstantConversion.DIRECTORY_X_START;
+import static com.example.Zhora.service.constant.ConstantConversion.DIRECTORY_Y_START;
+import static com.example.Zhora.service.constant.ConstantConversion.PRE_DIRECTORY;
+import static com.example.Zhora.service.constant.ConstantConversion.IMAGE_X_START;
+import static com.example.Zhora.service.constant.ConstantConversion.IMAGE_Y_START;
+import static com.example.Zhora.service.constant.ConstantConversion.TEXT_FONT_SIZE;
+import static com.example.Zhora.service.constant.ConstantConversion.TEXT_LEADING;
+import static com.example.Zhora.service.constant.ConstantConversion.TEXT_X_START;
+import static com.example.Zhora.service.constant.ConstantConversion.TEXT_Y_START;
+import static com.example.Zhora.service.constant.ConstantConversion.PRE_FILE;
+import static com.example.Zhora.service.constant.ConstantConversion.UNKNOWN_FONT_SIZE;
+import static com.example.Zhora.service.constant.ConstantConversion.LINE_UNSUPPORTED;
+import static com.example.Zhora.service.constant.ConstantConversion.UNKNOWN_X_START;
+import static com.example.Zhora.service.constant.ConstantConversion.UNKNOWN_Y_START;
+import static com.example.Zhora.service.constant.ConstantConversion.NON_CONVERTABLE;
+import static com.example.Zhora.service.constant.ConstantConversion.PRE_NAME;
+import static com.example.Zhora.service.constant.ConstantConversion.PRE_SIZE;
+import static com.example.Zhora.service.constant.ConstantConversion.POST_BYTES;
 
 @Slf4j
 @Service

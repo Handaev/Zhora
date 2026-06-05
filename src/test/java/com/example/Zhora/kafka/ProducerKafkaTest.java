@@ -36,7 +36,7 @@ class ProducerKafkaTest {
 
     @BeforeEach
     void setUp() {
-        ReflectionTestUtils.setField(producerKafka, "TOPIC", testTopic);
+        ReflectionTestUtils.setField(producerKafka, "TOPIC_RESPONSE", testTopic);
     }
 
     @Test

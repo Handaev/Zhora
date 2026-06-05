@@ -17,8 +17,11 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-import static com.example.Zhora.service.constant.ConstantConversion.*;
+import static com.example.Zhora.service.constant.ConstantConversion.TOP_MARGIN;
+import static com.example.Zhora.service.constant.ConstantConversion.TXT_FONT_SIZE;
 import static org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName.HELVETICA;
+import static com.example.Zhora.service.constant.ConstantConversion.TXT_LEADING;
+import static com.example.Zhora.service.constant.ConstantConversion.TXT_X_START;
 
 @Service
 public class ConversionTxtServiceImpl extends AbstractConversionServiceImpl {
