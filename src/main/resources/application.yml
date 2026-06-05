@@ -6,7 +6,6 @@ server:
   conversion:
     limit: 20
     bucketForPdf: ${TO_BUCKET_PDF:pdf}
-    topicResponse: conversion-response
 
 spring:
   datasource:
@@ -25,11 +24,12 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      topicResponse: conversion-response
     consumer:
       group-id: conversion
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-
+      topicRequest: conversion-request
 
 minio:
   url: ${URL:http://localhost:9000}

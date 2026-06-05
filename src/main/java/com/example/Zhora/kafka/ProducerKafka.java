@@ -20,13 +20,13 @@ public class ProducerKafka {
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final FileConversionOutboxMapper fileConversionOutboxMapper;
 
-    @Value("${server.conversion.topicResponse}")
-    private String TOPIC;
+    @Value("${spring.kafka.producer.topicResponse}")
+    private String TOPIC_RESPONSE;
 
     public void sendMessage(List<FileConversionOutbox> records) {
         for (FileConversionOutbox file : records) {
             ConversionResponseRecord fileConversionOutbox = fileConversionOutboxMapper.toConversionResponseRecord(file);
-            kafkaTemplate.send(new ProducerRecord<>(TOPIC, fileConversionOutbox));
+            kafkaTemplate.send(new ProducerRecord<>(TOPIC_RESPONSE, fileConversionOutbox));
             log.info("Send message to kafka topic count: {}", fileConversionOutbox);
         }
     }

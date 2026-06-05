@@ -25,7 +25,7 @@ public class ConsumerKafka {
     private final FileConversionInboxMapper fileConversionMapper;
     private final ObjectMapper objectMapper;
 
-    @KafkaListener(groupId = "conversion", topics = "conversion-request")
+    @KafkaListener(groupId = "${spring.kafka.consumer.group-id}", topics = "${spring.kafka.consumer.topicRequest}")
     public void handleConversionFile(ConsumerRecord<String, String> record) {
         String recordStr = record.value();
         log.debug("Received ConversionRequestRecord: {}", recordStr);
