@@ -1,0 +1,46 @@
+server:
+  port: ${PORT_APP:8081}
+  scheduler:
+    fixedRateRead: 15000
+    fixedRateWrite: 5000
+  conversion:
+    limit: 20
+    bucketForPdf: ${TO_BUCKET_PDF:pdf}
+
+spring:
+  datasource:
+    url: ${URL_DB:jdbc:postgresql://localhost:5432/conversion}
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      topicResponse: conversion-response
+    consumer:
+      group-id: conversion
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      topicRequest: conversion-request
+
+minio:
+  url: ${URL:http://localhost:9000}
+  access-key: ${ACCESS_KEY:jora}
+  secret-key: ${SECRET_KEY:jora1234}
+
+logging:
+  level:
+    com.example.Zhora: DEBUG
+    org:
+      apache:
+        kafka:
+          clients:
+            NetworkClient=DEBUG:
