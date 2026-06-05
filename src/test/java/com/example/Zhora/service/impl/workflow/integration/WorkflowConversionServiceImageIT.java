@@ -19,14 +19,12 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-@SpringBootTest
 public class WorkflowConversionServiceImageIT extends BaseIntegrationTest {
 
     @Autowired

@@ -12,14 +12,10 @@ import java.util.UUID;
 @Repository
 public interface FileConversionInboxRepository extends JpaRepository<FileConversionInbox, UUID> {
 
-    @Query(value = "select f.id from FileConversionInbox f " +
-            "where f.bucketName = :bucketName " +
-            "and f.name = :name " +
-            "and f.toExtension = :toExtension")
+    @Query(value = "select f.id from FileConversionInbox f where f.bucketName = :bucketName and f.name = :name and f.toExtension = :toExtension")
     Optional<UUID> findUuidByBucketNameAndNameAndToExtension(
             String bucketName, String name, String toExtension);
 
-    @Query(value = "select * from file_conversion_inbox " +
-            "where is_conversion = false limit :count", nativeQuery = true)
+    @Query(value = "select * from file_conversion_inbox where is_conversion = false limit :count", nativeQuery = true)
     List<FileConversionInbox> findFilesNoConversion(int count);
 }

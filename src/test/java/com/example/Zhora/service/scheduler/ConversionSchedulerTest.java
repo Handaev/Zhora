@@ -41,7 +41,6 @@ class ConversionSchedulerTest {
     @BeforeEach
     void setUp() {
         ReflectionTestUtils.setField(conversionScheduler, "LIMIT", testLimit);
-        ReflectionTestUtils.setField(conversionScheduler, "TOPIC_RESPONSE", "test-topic");
     }
 
     @Test

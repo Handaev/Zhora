@@ -8,15 +8,23 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.*;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.io.ByteArrayInputStream;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -39,7 +47,7 @@ public class ConversionZipServiceImpl extends AbstractConversionServiceImpl{
             PDFont customFont = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
 
             ZipEntry entry;
-            while ((entry = zipStream.getNextEntry()) != null) {
+            while (Objects.nonNull((entry = zipStream.getNextEntry()))) {
                 String name = entry.getName();
 
                 if (entry.isDirectory()) {
@@ -95,7 +103,7 @@ public class ConversionZipServiceImpl extends AbstractConversionServiceImpl{
     private void processImagePage(PDDocument doc, byte[] bytes) throws IOException {
         try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
             BufferedImage bimage = ImageIO.read(bais);
-            if (bimage != null) {
+            if (Objects.nonNull(bimage)) {
                 PDRectangle pageSize = new PDRectangle(bimage.getWidth(), bimage.getHeight());
                 PDPage page = new PDPage(pageSize);
                 doc.addPage(page);
@@ -126,7 +134,7 @@ public class ConversionZipServiceImpl extends AbstractConversionServiceImpl{
             String line;
             int lines = 0;
 
-            while ((line = reader.readLine()) != null && lines < 40) {
+            while (Objects.nonNull((line = reader.readLine()))  && lines < 40) {
                 line = line.replace("\t", "    ").replaceAll("[\\p{Cntrl}&&[^\\r\\n\\t]]", "");
                 try {
                     stream.showText(line);

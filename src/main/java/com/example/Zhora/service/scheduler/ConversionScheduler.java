@@ -1,6 +1,7 @@
 package com.example.Zhora.service.scheduler;
 
 import com.example.Zhora.entity.FileConversionOutbox;
+import com.example.Zhora.exception.ConversionException;
 import com.example.Zhora.kafka.ProducerKafka;
 import com.example.Zhora.record.ConversionMultipartFile;
 import com.example.Zhora.service.impl.workflow.WorkflowConversionServiceImpl;
@@ -27,9 +28,6 @@ public class ConversionScheduler {
     @Value("${server.conversion.limit}")
     private int LIMIT;
 
-    @Value("${server.conversion.topicResponse}")
-    private String TOPIC_RESPONSE;
-
     @Scheduled(fixedRateString = "${server.scheduler.fixedRateRead}")
     public void scheduleConversion() {
         log.debug("Starting scheduler conversion");
@@ -45,7 +43,7 @@ public class ConversionScheduler {
                     try {
                         ConversionMultipartFile file = future.get();
                         workflowConvertService.save(file);
-                    } catch (ExecutionException e) {
+                    } catch (ExecutionException | ConversionException e) {
                         log.debug("Error conversion file: {}", e.getMessage(), e);
                     }
                 }

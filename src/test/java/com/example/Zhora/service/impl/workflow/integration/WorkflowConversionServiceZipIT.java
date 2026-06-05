@@ -28,7 +28,6 @@ import java.util.zip.ZipOutputStream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
 public class WorkflowConversionServiceZipIT extends BaseIntegrationTest {
 
     @Autowired

@@ -2,7 +2,13 @@ package com.example.Zhora.service.repository;
 
 import com.example.Zhora.entity.FileConversionInbox;
 import com.example.Zhora.exception.ConversionException;
-import io.minio.*;
+import io.minio.GetObjectArgs;
+import io.minio.MinioClient;
+import io.minio.ObjectWriteResponse;
+import io.minio.GetObjectResponse;
+import io.minio.PutObjectArgs;
+import io.minio.StatObjectResponse;
+import io.minio.StatObjectArgs;
 import io.minio.errors.MinioException;
 import okhttp3.Headers;
 import org.junit.jupiter.api.Test;
@@ -15,12 +21,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.NoSuchFileException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class MinioServiceImplTest {
@@ -73,7 +81,20 @@ class MinioServiceImplTest {
 
         StatObjectResponse result = minioService.statObject(file);
 
-        assertThat(result).isSameAs(mockResponse);
+        assertThat(result).isSameAs(mockResponse).isEqualTo(mockResponse);
+    }
+
+    @Test
+    void statObject_WhenMinioExceptionOccurs_ShouldThrowConversionException() throws Exception {
+        FileConversionInbox file = new FileConversionInbox();
+        file.setName("test.txt");
+        file.setBucketName("bucket");
+
+        when(minioClient.statObject(any(StatObjectArgs.class))).thenThrow(new MinioException("Minio error") {});
+
+        assertThatThrownBy(() -> minioService.statObject(file))
+                .isInstanceOf(ConversionException.class)
+                .hasMessageContaining("Ошибка при получении файла test.txt");
     }
 
     @Test
@@ -91,6 +112,20 @@ class MinioServiceImplTest {
 
         assertThat(result).isSameAs(mockResponse);
         verify(minioClient, times(1)).putObject(any(PutObjectArgs.class));
+    }
+
+    @Test
+    void putObject_WhenMinioExceptionOccurs_ShouldThrowConversionException() throws Exception {
+        MultipartFile mockFile = mock(MultipartFile.class);
+        when(mockFile.getName()).thenReturn("file.pdf");
+        when(mockFile.getInputStream()).thenReturn(new ByteArrayInputStream("data".getBytes()));
+        when(mockFile.getSize()).thenReturn(4L);
+        when(mockFile.getContentType()).thenReturn("application/pdf");
+        when(minioClient.putObject(any(PutObjectArgs.class))).thenThrow(new MinioException("Minio error"));
+
+        assertThatThrownBy(() -> minioService.putObject(mockFile, "target-bucket"))
+                .isInstanceOf(ConversionException.class)
+                .hasMessageContaining("Ошибка при обновлении файла file.pdf");
     }
 
     @Test

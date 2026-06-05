@@ -1,7 +1,17 @@
 package com.example.Zhora.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.Objects;
@@ -35,7 +45,7 @@ public class FileConversionOutbox {
     public boolean equals(Object o) {
         if(o == this) {
             return true;
-        } else if(o == null || getClass() != o.getClass()) {
+        } else if(Objects.isNull(o) || getClass() != o.getClass()) {
             return false;
         }
 

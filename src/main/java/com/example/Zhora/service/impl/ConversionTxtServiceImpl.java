@@ -9,8 +9,13 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import static com.example.Zhora.service.constant.ConstantConversion.*;
 import static org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName.HELVETICA;
@@ -43,7 +48,7 @@ public class ConversionTxtServiceImpl extends AbstractConversionServiceImpl {
                 contentStream.newLineAtOffset(TXT_X_START, y);
 
                 String line;
-                while ((line = reader.readLine()) != null) {
+                while (Objects.nonNull((line = reader.readLine()))) {
                     line = line.replace("\r", "").replace("\t", "    ");
 
                     contentStream.showText(line);

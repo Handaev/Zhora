@@ -1,6 +1,5 @@
 package com.example.Zhora.record;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -55,7 +55,7 @@ public class ConversionMultipartFile implements MultipartFile {
 
     @Override
     public boolean isEmpty() {
-        return content == null || content.length == 0;
+        return Objects.isNull(content) || content.length == 0;
     }
 
     @Override

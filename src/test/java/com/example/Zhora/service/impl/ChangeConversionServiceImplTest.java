@@ -9,13 +9,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.any;
 
 @ExtendWith(MockitoExtension.class)
 class ChangeConversionServiceImplTest {
@@ -27,11 +30,10 @@ class ChangeConversionServiceImplTest {
     private ConversionTxtServiceImpl conversionTxtService;
 
     private ChangeConversionServiceImpl changeConversionService;
-    private List<ConversionService> conversionServices;
 
     @BeforeEach
     void setUp() {
-        conversionServices = new ArrayList<>(List.of(conversionImageService, conversionTxtService));
+        List<ConversionService> conversionServices = new ArrayList<>(List.of(conversionImageService, conversionTxtService));
         changeConversionService = new ChangeConversionServiceImpl(conversionServices);
     }
 

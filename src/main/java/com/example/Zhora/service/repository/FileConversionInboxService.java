@@ -1,7 +1,7 @@
 package com.example.Zhora.service.repository;
 
-
 import com.example.Zhora.entity.FileConversionInbox;
+import com.example.Zhora.exception.ConversionException;
 import com.example.Zhora.repository.FileConversionInboxRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,6 +30,7 @@ public class FileConversionInboxService {
     }
 
     public FileConversionInbox findById(UUID id) {
-        return fileConversionInboxRepository.findById(UUID.fromString(id.toString())).orElse(null);
+        return fileConversionInboxRepository.findById(id)
+                .orElseThrow(() -> new ConversionException(String.format("Not found file with id: %s", id)));
     }
 }

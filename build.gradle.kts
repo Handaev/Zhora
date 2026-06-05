@@ -42,11 +42,11 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testAnnotationProcessor("org.projectlombok:lombok")
 
-	testImplementation("org.testcontainers:testcontainers")
+	testImplementation("org.testcontainers:testcontainers:1.21.4")
 	testImplementation("org.testcontainers:junit-jupiter")
 
 	testImplementation("org.testcontainers:postgresql")
-	testImplementation("org.testcontainers:kafka")
+	testImplementation("org.testcontainers:kafka:1.21.4")
 	testImplementation("org.testcontainers:minio:1.19.7")
 
 	testImplementation("org.springframework.kafka:spring-kafka-test")

@@ -1,6 +1,7 @@
 package com.example.Zhora.service.repository;
 
 import com.example.Zhora.entity.FileConversionInbox;
+import com.example.Zhora.exception.ConversionException;
 import com.example.Zhora.repository.FileConversionInboxRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +14,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class FileConversionInboxServiceTest {
@@ -82,8 +86,8 @@ class FileConversionInboxServiceTest {
         UUID id = UUID.randomUUID();
         when(fileConversionInboxRepository.findById(id)).thenReturn(Optional.empty());
 
-        FileConversionInbox result = fileConversionInboxService.findById(id);
-
-        assertThat(result).isNull();
+        assertThatThrownBy(() -> fileConversionInboxService.findById(id))
+                .isInstanceOf(ConversionException.class)
+                .hasMessageContaining("Not found file with id: " + id);
     }
 }

@@ -1,12 +1,18 @@
 package com.example.Zhora.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -39,13 +45,13 @@ public class FileConversionInbox {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (Objects.isNull(o) || getClass() != o.getClass()) {
             return false;
         }
-        FileConversionOutbox fileConversionOutbox = (FileConversionOutbox) o;
+        FileConversionInbox fileConversionInbox = (FileConversionInbox) o;
 
-        return this.name.equals(fileConversionOutbox.getName())
-                && this.bucketName.equals(fileConversionOutbox.getBucketName());
+        return this.name.equals(fileConversionInbox.getName())
+                && this.bucketName.equals(fileConversionInbox.getBucketName());
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.example.Zhora.service.scheduler.integration;
 
 import com.example.Zhora.base.BaseIntegrationTest;
 import com.example.Zhora.entity.FileConversionInbox;
-import com.example.Zhora.exception.ConversionException;
 import com.example.Zhora.repository.FileConversionInboxRepository;
 import com.example.Zhora.repository.FileConversionOutboxRepository;
 import com.example.Zhora.service.scheduler.ConversionScheduler;
@@ -12,8 +11,6 @@ import io.minio.PutObjectArgs;
 import io.minio.StatObjectArgs;
 import io.minio.StatObjectResponse;
 import io.minio.errors.MinioException;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +21,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-@SpringBootTest
 public class ConversionSchedulerITest extends BaseIntegrationTest {
 
     @Autowired

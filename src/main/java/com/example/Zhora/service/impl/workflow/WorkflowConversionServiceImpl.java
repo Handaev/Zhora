@@ -3,6 +3,7 @@ package com.example.Zhora.service.impl.workflow;
 
 import com.example.Zhora.entity.FileConversionInbox;
 import com.example.Zhora.entity.FileConversionOutbox;
+import com.example.Zhora.exception.ConversionException;
 import com.example.Zhora.record.ConversionMultipartFile;
 import com.example.Zhora.service.WorkflowConversionService;
 import com.example.Zhora.service.impl.ChangeConversionServiceImpl;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.*;
 
@@ -63,19 +65,20 @@ public class WorkflowConversionServiceImpl implements WorkflowConversionService 
 
     @Override
     @Transactional
-    public void save(ConversionMultipartFile file) {
+    public void save(ConversionMultipartFile file) throws ConversionException {
         String fileName = file.getName();
         minioService.putObject(file, bucketForPdf);
 
         UUID fileId = fileConversionOutboxService.findUuidByNameAndBucketName(fileName, bucketForPdf);
 
-        if (fileId == null) {
+        if (Objects.isNull(fileId)) {
             fileConversionOutboxService.save(FileConversionOutbox.builder()
                     .name(fileName)
                     .bucketName(bucketForPdf)
                     .build()
             );
         }
+
         FileConversionInbox inboxFile = fileConversionService.findById(file.getFileConversionInboxUuid());
         inboxFile.setConversion(true);
     }
