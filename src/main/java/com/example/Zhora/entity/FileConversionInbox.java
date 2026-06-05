@@ -51,11 +51,12 @@ public class FileConversionInbox {
         FileConversionInbox fileConversionInbox = (FileConversionInbox) o;
 
         return this.name.equals(fileConversionInbox.getName())
-                && this.bucketName.equals(fileConversionInbox.getBucketName());
+                && this.bucketName.equals(fileConversionInbox.getBucketName())
+                && this.toExtension.equals(fileConversionInbox.getToExtension());
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(name, bucketName, toExtension);
     }
 }
