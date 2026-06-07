@@ -1,6 +1,6 @@
 plugins {
 	java
-	id("org.springframework.boot") version "3.4.0"
+	id("org.springframework.boot") version "3.4.3"
 	id("io.spring.dependency-management") version "1.1.7"
 }
 
@@ -16,6 +16,8 @@ java {
 repositories {
 	mavenCentral()
 }
+
+extra["springCloudVersion"] = "2024.0.0"
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -37,6 +39,8 @@ dependencies {
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.6.2")
 	implementation("org.projectlombok:lombok-mapstruct-binding:0.2.0")
 
+	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testCompileOnly("org.projectlombok:lombok")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -52,6 +56,12 @@ dependencies {
 	testImplementation("org.springframework.kafka:spring-kafka-test")
 
 	testImplementation("org.awaitility:awaitility")
+}
+
+dependencyManagement {
+	imports {
+		mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+	}
 }
 
 tasks.withType<Test> {
