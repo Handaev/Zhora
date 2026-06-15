@@ -8,6 +8,8 @@ server:
     bucketForPdf: ${TO_BUCKET_PDF:pdf}
 
 spring:
+  application:
+    name: conversion-service
   datasource:
     url: ${URL_DB:jdbc:postgresql://localhost:5432/conversion}
     username: postgres
@@ -35,6 +37,13 @@ minio:
   url: ${URL:http://localhost:9000}
   access-key: ${ACCESS_KEY:jora}
   secret-key: ${SECRET_KEY:jora1234}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+  instance:
+    instance-id: ${spring.application.name}:${server.port}:${random.value}
 
 logging:
   level:

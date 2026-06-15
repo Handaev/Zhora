@@ -50,7 +50,7 @@ services:
       KAFKA_PROCESS_ROLES: broker,controller
 
       KAFKA_LISTENERS: INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
 
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
@@ -87,20 +87,20 @@ services:
       - kafka
 
 
-  app:
-    build: .
-    container_name: 'app'
-    environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-    depends_on:
-      minio:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-    ports:
-      - 8081:8080
-    networks:
-      - app-zhora
+#  app:
+#    build: .
+#    container_name: 'app'
+#    environment:
+#      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+#    depends_on:
+#      minio:
+#        condition: service_healthy
+#      postgres:
+#        condition: service_healthy
+#    ports:
+#      - 8081:8080
+#    networks:
+#      - app-zhora
 
 
 volumes:
